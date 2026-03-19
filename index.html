@@ -10,58 +10,118 @@
 
     <nav class="sidebar">
         <div class="logo-container">
-            <img src="assets/logo.png" alt="GUMA Logo" class="logo"> <h2>GUMA</h2>
+            <img src="assets/logo.png" alt="GUMA Logo" class="logo">
+            <img src="assets/text.png" alt="GUMA Text" class="text"> 
         </div>
         <ul class="menu-blocks">
-            <li onclick="showSection('sorteio')">Sorteio</li>
-            <li onclick="showSection('fotos')">Fotos de Casal</li>
-            <li onclick="showSection('beijos')">Fotos de Beijo</li>
-            <li onclick="showSection('jogos')">Jogos Diários</li>
-            <li onclick="showSection('instagram')">Instagram</li>
-            <li onclick="showSection('instagram-minas')">Instagram Minas</li>
+            <li onclick="showSection('sorteio')">🎁 Sorteio</li>
+            <li onclick="showSection('fotos')">❤️ Fotos de Casal</li>
+            <li onclick="showSection('fotos-futebol')">⚽ Casal - Futebol</li> <li onclick="showSection('beijos')">💋 Fotos de Beijo</li>
+            <li onclick="showSection('sons')">👶 Jogo dos Filhos</li> <li onclick="showSection('jogos')">🎮 Jogos Diários</li>
+            <li onclick="showSection('instagram')">📱 Instagram</li>
+            <li onclick="showSection('instagram-minas')">📱 Instagram Minas</li>
         </ul>
     </nav>
 
     <main class="content">
 
-      <section id="sorteio" class="active">
-          <h1>🎁 Sistema de Sorteio GUMA</h1>
-          <div class="raffle-container">
-              <textarea id="participant-list" placeholder="Cole os nomes aqui (separados por vírgula ou linha)..." oninput="updateRaffleInfo()"></textarea>
+        <section id="sorteio" class="active">
+            <h1>🎁 Sistema de Sorteio GUMA</h1>
+            <div class="raffle-container">
+                <textarea id="participant-list" placeholder="Cole os nomes aqui (separados por vírgula ou linha)..." oninput="updateRaffleInfo()"></textarea>
+                <div id="raffle-info" class="info-box">
+                    Participantes: <span id="total-count">0</span>
+                </div>
+                <div class="draw-controls">
+                    <label>Grupos de:</label>
+                    <input type="number" id="group-size" min="2" value="2">
+                    <button onclick="executeDraw()" class="draw-btn">✨ Realizar Sorteio</button>
+                </div>
+                <div id="draw-results" class="results-grid"></div>
+            </div>
+            <br>
+            <h3>Link da Roleta (Temas)</h3>
+            <a href="https://app-sorteos.com/pt/apps/girar-roleta-aleatoria?hash=M537OE" target="_blank" class="draw-btn" style="text-decoration: none; display: inline-block;">Girar Roleta Externa</a>
+        </section>
 
-              <div id="raffle-info" class="info-box">
-                  Participantes: <span id="total-count">0</span>
-                  <div id="group-suggestions"></div>
-              </div>
+        <section id="fotos">
+            <h1>❤️ Fotos de Casal</h1>
+            <p class="subtitle">Nossos melhores momentos.</p>
+            <div id="polaroid-gallery" class="gallery-container"></div>
+        </section>
 
-              <div class="draw-controls">
-                  <label>Sortear em grupos de:</label>
-                  <input type="number" id="group-size" min="2" value="2">
-                  <button onclick="executeDraw()" class="draw-btn">✨ Realizar Sorteio</button>
-              </div>
+        <section id="fotos-futebol">
+            <h1>⚽ Fotos de Casal - Futebol</h1>
+            <p class="subtitle">Onde o amor e o jogo se encontram.</p>
+            <div id="football-gallery" class="gallery-container">
+                </div>
+        </section>
 
-              <div id="draw-results" class="results-grid">
-                  </div>
-          </div>
-          <h1>Link da Roleta (Temas)</h1>
-          <a href="https://app-sorteos.com/pt/apps/girar-roleta-aleatoria?hash=M537OE"  target="_blank" class="roleta-btn"></a>
-      </section>
+        <section id="beijos">
+            <h1>💋 Fotos de Beijo</h1>
+            <div id="kiss-gallery" class="gallery-container"></div>
+        </section>
 
-      <section id="fotos">
-          <h1>❤️ Fotos de Casal</h1>
-          <p class="subtitle">Organizado automaticamente por relevância de tamanho</p>
-
-          <div id="polaroid-gallery" class="gallery-container">
-              </div>
-      </section>
-<section id="beijos">
-    <h1>💋 Fotos de Beijo</h1>
-    <p class="subtitle">Os momentos mais doces guardados aqui.</p>
+        <section id="sons">
+    <h1>👶 Cartório GUMA (Jogo dos Filhos)</h1>
+    <p class="subtitle">Combine os sobrenomes e registre a linhagem!</p>
     
-    <div id="kiss-gallery" class="gallery-container">
+    <div class="raffle-container">
+        <div class="father-selector">
+            <label>Escolha o Pai:</label>
+            <div class="radio-group">
+                <button onclick="setFather('Arthur')" id="btn-arthur" class="father-btn active">Arthur Rocha</button>
+                <button onclick="setFather('Gustavo')" id="id-gustavo" class="father-btn">Gustavo Dalur</button>
+            </div>
         </div>
+
+        <div class="game-dashboard">
+            <div class="stat-card">
+                <span>Letra</span>
+                <h2 id="current-letter">-</h2>
+            </div>
+            <div class="stat-card">
+                <span>Gênero</span>
+                <h2 id="current-gender">Masculino</h2>
+            </div>
+            <div class="stat-card">
+                <span>Mãe (Sorteada)</span>
+                <h2 id="current-mother">-</h2>
+            </div>
+        </div>
+
+        <div class="draw-controls" style="justify-content: center; margin-top: 20px;">
+            <button onclick="generateGameStep()" class="draw-btn">🎲 Sortear Próximo Passo</button>
+        </div>
+
+        <div id="registration-area" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+            <h3>Registrar Nascimento</h3>
+            <div class="registration-inputs">
+                <input type="text" id="chosen-name" placeholder="Digite o nome (Ex: Gabriel)">
+                <button onclick="registerChild()" class="draw-btn" style="background: var(--primary);">🖋️ Registrar no Cartório</button>
+            </div>
+            <p id="preview-full-name" style="margin-top: 10px; font-style: italic; opacity: 0.8;"></p>
+        </div>
+    </div>
+
+    <div class="raffle-container" style="margin-top: 30px;">
+        <h3>📜 Registro Oficial de Filhos</h3>
+        <div class="table-wrapper">
+            <table class="sons-table">
+                <thead>
+                    <tr>
+                        <th>Nome Completo</th>
+                        <th>Gênero</th>
+                        <th>Pai</th>
+                        <th>Letra</th>
+                    </tr>
+                </thead>
+                <tbody id="registry-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
 </section>
-      </section>
         <section id="jogos">
             <h1>🎮 Jogos Diários</h1>
             <div class="games-grid">
