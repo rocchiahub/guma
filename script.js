@@ -97,7 +97,7 @@ const fotosCasal = [
     { url: 'assets/foto2.jpg', nome: 'Gustavo ❤️ Gabriela' },
     { url: 'assets/foto3.jpg', nome: 'Gustavo ❤️ Dominik' },
     { url: 'assets/foto4.jpg', nome: 'Gustavo ❤️ Lina' },
-    { url: 'assets/foto6.jpg', nome: 'Arthur M ❤️ Larissa' },
+    { url: 'assets/foto6.jpg', nome: 'Arthur M ❤️ Larissa Pires' },
     { url: 'assets/foto7.jpg', nome: 'Arthur M ❤️ Maria Luiza' },
     { url: 'assets/foto9.webp', nome: 'Enzo L ❤️ Anelize' },
     { url: 'assets/foto10.jpg', nome: 'Enzo D ❤️ Bianca Ohata' },
@@ -109,6 +109,17 @@ const fotosCasal = [
     { url: 'assets/foto18.jpg', nome: 'Arthur M ❤️ Stephany' },
     { url: 'assets/foto19.jpg', nome: 'Gustavo ❤️ Yasmeen' },
     { url: 'assets/foto20.jpg', nome: 'Gustavo ❤️ Fernanda' },
+    { url: 'assets/foto35.jpg', nome: 'Gustavo ❤️ Maysa' },
+    { url: 'assets/foto34.jpg', nome: 'Gustavo ❤️ Anna Laura' },
+    { url: 'assets/foto33.jpg', nome: 'Gustavo ❤️ Nicolly' },
+    { url: 'assets/foto32.jpg', nome: 'Gustavo ❤️ Júlliah' },
+    { url: 'assets/foto31.jpg', nome: 'Gustavo ❤️ Ana Júlia' },
+    { url: 'assets/foto36.jpg', nome: 'Gustavo ❤️ Emilly' },
+    { url: 'assets/foto37.jpg', nome: 'Gustavo ❤️ Melissa' },
+    { url: 'assets/foto39.jpeg', nome: 'Gustavo ❤️ Sara' },
+    { url: 'assets/foto40.jpeg', nome: 'Arthur M ❤️ Larissa Furtado' },
+    { url: 'assets/foto41.jpeg', nome: 'Arthur M ❤️ Luiza' },
+    { url: 'assets/foto42.jpg', nome: 'Arthur M ❤️ Luciana' },
 ];
 
 const fotosBeijo = [
@@ -170,3 +181,123 @@ document.addEventListener('DOMContentLoaded', () => {
     renderizarGaleria(fotosCasal, 'polaroid-gallery');
     renderizarGaleria(fotosBeijo, 'kiss-gallery');
 });
+
+// --- Configurações do Jogo ---
+let girlsList = [
+    "Sancho", "Meireles", "Pereira", "Thaila", "Guedes", "Pires", "Carneiro", 
+    "Candido", "Candyce", "Castro", "Teixeira", "Vieira", "Chen", "Costa", "de Oliveira",
+    "Bizeli", "Li", "Furusugi", "Chan", "Cai", "Domingues", "Al Sied", "Medeiros", "Yiqing"
+];
+
+let registeredChildren = [];
+let currentFather = "Arthur"; // Default
+let isMaleTurn = true;
+let currentSorteio = { letter: '', mother: '', gender: '' };
+
+const fatherSurnames = {
+    "Arthur": "Rocha",
+    "Gustavo": "Dalur Rodrigues"
+};
+
+// --- Funções do Jogo ---
+
+function setFather(name) {
+    currentFather = name;
+    // Estética dos botões
+    document.querySelectorAll('.father-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    updatePreview();
+}
+
+function generateGameStep() {
+    if (girlsList.length === 0) {
+        alert("Lista de minas zerada! Todos os destinos foram selados.");
+        return;
+    }
+
+    // Sortear Letra
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    currentSorteio.letter = letters[Math.floor(Math.random() * letters.length)];
+    
+    // Sortear Mãe
+    const girlIndex = Math.floor(Math.random() * girlsList.length);
+    currentSorteio.mother = girlsList[girlIndex];
+    
+    // Definir Gênero
+    currentSorteio.gender = isMaleTurn ? "Masculino" : "Feminino";
+
+    // Atualizar UI
+    document.getElementById('current-letter').innerText = currentSorteio.letter;
+    document.getElementById('current-gender').innerText = currentSorteio.gender;
+    document.getElementById('current-mother').innerText = currentSorteio.mother;
+    
+    // Mostrar área de registro
+    document.getElementById('registration-area').style.display = 'block';
+    document.getElementById('chosen-name').value = '';
+    document.getElementById('chosen-name').focus();
+    
+    updatePreview();
+}
+
+function updatePreview() {
+    const typed = document.getElementById('chosen-name').value || "[Nome]";
+    const full = `${typed} ${currentSorteio.mother} ${fatherSurnames[currentFather]}`;
+    document.getElementById('preview-full-name').innerText = `Prévia: ${full}`;
+}
+
+// Listener para atualizar a prévia enquanto digita
+document.getElementById('chosen-name')?.addEventListener('input', updatePreview);
+
+function registerChild() {
+    const nameInput = document.getElementById('chosen-name').value;
+    
+    if (!nameInput) {
+        alert("Digite um nome para registrar!");
+        return;
+    }
+
+    if (nameInput[0].toUpperCase() !== currentSorteio.letter) {
+        alert(`O nome deve começar com a letra ${currentSorteio.letter}!`);
+        return;
+    }
+
+    const fullName = `${nameInput} ${currentSorteio.mother} ${fatherSurnames[currentFather]}`;
+    
+    // Salvar no "Banco de Dados"
+    const newEntry = {
+        fullName: fullName,
+        gender: currentSorteio.gender,
+        father: currentFather,
+        letter: currentSorteio.letter
+    };
+
+    registeredChildren.push(newEntry);
+    
+    // Remover a mãe da lista para não repetir
+    girlsList = girlsList.filter(g => g !== currentSorteio.mother);
+    
+    // Alternar gênero
+    isMaleTurn = !isMaleTurn;
+    
+    // Atualizar Tabela e Resetar Interface
+    updateRegistryTable();
+    document.getElementById('registration-area').style.display = 'none';
+    alert("Nascimento registrado com sucesso!");
+}
+
+function updateRegistryTable() {
+    const tbody = document.getElementById('registry-body');
+    tbody.innerHTML = '';
+
+    registeredChildren.forEach(child => {
+        const row = `
+            <tr>
+                <td><strong>${child.fullName}</strong></td>
+                <td>${child.gender === 'Masculino' ? '♂️ Masc' : '♀️ Fem'}</td>
+                <td>${child.father}</td>
+                <td><span class="letter-badge">${child.letter}</span></td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
